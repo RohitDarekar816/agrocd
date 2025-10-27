@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-ki-deployment
+  labels:
+    app: nginx
+  namespace: nginx-ki-deployment
+spec:
+  replicas: 4
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+        - name: nginx
+          image: nginx:latest
+          ports:
+            - containerPort: 80
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx-ki-service
+  namespace: nginx-ki-deployment
+spec:
+  selector:
+    app.kubernetes.io/name: nginx
+  ports:
+    - name: http
+      protocol: TCP
+      port: 80
+      targetPort: 8085
+    - name: https
+      protocol: TCP
+      port: 443
+      targetPort: 8086
